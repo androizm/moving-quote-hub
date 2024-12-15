@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import Index from "./pages/Index";
+import CustomerAuth from "./pages/CustomerAuth";
+import CompanyAuth from "./pages/CompanyAuth";
 
 const queryClient = new QueryClient();
 
@@ -17,6 +19,8 @@ const App = () => (
         <AnimatePresence mode="wait">
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/customer-login" element={<CustomerAuth />} />
+            <Route path="/company-login" element={<CompanyAuth />} />
           </Routes>
         </AnimatePresence>
       </BrowserRouter>
