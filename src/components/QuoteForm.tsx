@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, ArrowLeft, MapPin, Calendar, Box, Users } from "lucide-react";
+import { ArrowRight, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
+import { MovingDetailsStep } from "./form-steps/MovingDetailsStep";
+import { CustomerInfoStep } from "./form-steps/CustomerInfoStep";
 
 interface FormData {
   fromAddress: string;
@@ -41,24 +40,53 @@ export const QuoteForm = () => {
     }));
   };
 
+  const validateFirstStep = () => {
+    return (
+      formData.fromAddress.trim() !== "" &&
+      formData.toAddress.trim() !== "" &&
+      formData.moveDate !== "" &&
+      formData.roomCount !== ""
+    );
+  };
+
+  const handleNext = () => {
+    if (validateFirstStep()) {
+      setStep(2);
+    } else {
+      toast({
+        title: "Please fill in all required fields",
+        description: "All fields except special items are required.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    toast({
-      title: "Quote Request Submitted",
-      description: "We'll connect you with moving companies soon!",
-    });
-    setFormData({
-      fromAddress: "",
-      toAddress: "",
-      moveDate: "",
-      roomCount: "",
-      specialItems: "",
-      name: "",
-      email: "",
-      phone: "",
-    });
-    setStep(1);
+    if (formData.name && formData.email && formData.phone) {
+      console.log("Form submitted:", formData);
+      toast({
+        title: "Quote Request Submitted",
+        description: "We'll connect you with moving companies soon!",
+      });
+      setFormData({
+        fromAddress: "",
+        toAddress: "",
+        moveDate: "",
+        roomCount: "",
+        specialItems: "",
+        name: "",
+        email: "",
+        phone: "",
+      });
+      setStep(1);
+    } else {
+      toast({
+        title: "Please fill in all required fields",
+        description: "Name, email, and phone number are required.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -77,114 +105,9 @@ export const QuoteForm = () => {
         </div>
 
         {step === 1 ? (
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label htmlFor="fromAddress">Current Address</Label>
-              <div className="relative">
-                <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-                <Input
-                  id="fromAddress"
-                  name="fromAddress"
-                  className="pl-10"
-                  placeholder="Enter your current address"
-                  value={formData.fromAddress}
-                  onChange={handleInputChange}
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="toAddress">New Address</Label>
-              <div className="relative">
-                <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-                <Input
-                  id="toAddress"
-                  name="toAddress"
-                  className="pl-10"
-                  placeholder="Enter your new address"
-                  value={formData.toAddress}
-                  onChange={handleInputChange}
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="moveDate">Moving Date</Label>
-              <div className="relative">
-                <Calendar className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-                <Input
-                  id="moveDate"
-                  name="moveDate"
-                  type="date"
-                  className="pl-10"
-                  value={formData.moveDate}
-                  onChange={handleInputChange}
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="roomCount">Number of Rooms</Label>
-              <div className="relative">
-                <Box className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-                <Input
-                  id="roomCount"
-                  name="roomCount"
-                  type="number"
-                  className="pl-10"
-                  placeholder="How many rooms?"
-                  value={formData.roomCount}
-                  onChange={handleInputChange}
-                />
-              </div>
-            </div>
-          </div>
+          <MovingDetailsStep formData={formData} onChange={handleInputChange} />
         ) : (
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
-              <div className="relative">
-                <Users className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-                <Input
-                  id="name"
-                  name="name"
-                  className="pl-10"
-                  placeholder="Enter your full name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="Enter your email"
-                value={formData.email}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number</Label>
-              <Input
-                id="phone"
-                name="phone"
-                type="tel"
-                placeholder="Enter your phone number"
-                value={formData.phone}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="specialItems">Special Items</Label>
-              <Textarea
-                id="specialItems"
-                name="specialItems"
-                placeholder="List any special items (piano, artwork, etc.)"
-                value={formData.specialItems}
-                onChange={handleInputChange}
-              />
-            </div>
-          </div>
+          <CustomerInfoStep formData={formData} onChange={handleInputChange} />
         )}
 
         <div className="flex justify-end gap-4">
@@ -194,7 +117,7 @@ export const QuoteForm = () => {
             </Button>
           )}
           {step === 1 ? (
-            <Button type="button" onClick={() => setStep(2)}>
+            <Button type="button" onClick={handleNext}>
               Next <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           ) : (
