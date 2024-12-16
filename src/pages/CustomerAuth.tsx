@@ -23,10 +23,23 @@ const CustomerAuth = () => {
           console.log("Customer signed out");
           setError(null);
         }
+        if (event === "USER_UPDATED") {
+          console.log("Customer profile updated");
+        }
       }
     );
 
-    return () => subscription.unsubscribe();
+    // Listen for auth errors
+    const authListener = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_UP" && !session) {
+        setError("This email is already registered. Please sign in instead.");
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+      authListener.data.subscription.unsubscribe();
+    };
   }, [navigate]);
 
   return (
