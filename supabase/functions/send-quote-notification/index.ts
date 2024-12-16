@@ -51,9 +51,14 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Could not extract ZIP codes from addresses");
     }
 
+    // Using service role to query auth.users
     const { data: companies, error: companiesError } = await supabase
       .from("profiles")
-      .select("email, company_name")
+      .select(`
+        company_name,
+        id,
+        service_zip_codes
+      `)
       .eq("role", "company")
       .or(`service_zip_codes.cs.{${fromZip}},service_zip_codes.cs.{${toZip}}`);
 
@@ -75,9 +80,25 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
+    // Get emails for the companies from auth.users
+    const { data: users, error: usersError } = await supabase
+      .auth.admin.listUsers();
+
+    if (usersError) {
+      console.error("Error fetching user emails:", usersError);
+      throw usersError;
+    }
+
+    // Create a map of user IDs to emails
+    const userEmails = new Map(
+      users.users.map(user => [user.id, user.email])
+    );
+
     // Send email to each matching company
     const emailPromises = companies.map(async (company) => {
-      if (!company.email) {
+      const companyEmail = userEmails.get(company.id);
+      
+      if (!companyEmail) {
         console.log(`Skipping company with no email: ${company.company_name}`);
         return;
       }
@@ -102,7 +123,7 @@ const handler = async (req: Request): Promise<Response> => {
         <p>Please log in to your dashboard to submit a quote.</p>
       `;
 
-      console.log(`Sending email to ${company.email}`);
+      console.log(`Sending email to ${companyEmail}`);
 
       const res = await fetch("https://api.resend.com/emails", {
         method: "POST",
@@ -112,25 +133,25 @@ const handler = async (req: Request): Promise<Response> => {
         },
         body: JSON.stringify({
           from: "MoveShop24 <quotes@resend.dev>",
-          to: [company.email],
+          to: [companyEmail],
           subject: "New Moving Quote Request",
           html: emailHtml,
         }),
       });
 
       const responseText = await res.text();
-      console.log(`Resend API response for ${company.email}:`, responseText);
+      console.log(`Resend API response for ${companyEmail}:`, responseText);
 
       if (!res.ok) {
         console.error(
-          `Failed to send email to ${company.email}:`,
+          `Failed to send email to ${companyEmail}:`,
           responseText
         );
-        return { success: false, company: company.email, error: responseText };
+        return { success: false, company: companyEmail, error: responseText };
       }
 
-      console.log(`Email sent successfully to ${company.email}`);
-      return { success: true, company: company.email };
+      console.log(`Email sent successfully to ${companyEmail}`);
+      return { success: true, company: companyEmail };
     });
 
     const results = await Promise.all(emailPromises);
