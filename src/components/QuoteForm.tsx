@@ -6,6 +6,8 @@ import { useToast } from "@/components/ui/use-toast";
 import { MovingDetailsStep } from "./form-steps/MovingDetailsStep";
 import { CustomerInfoStep } from "./form-steps/CustomerInfoStep";
 import { supabase } from "@/integrations/supabase/client";
+import { useSession } from "@supabase/auth-helpers-react";
+import { useNavigate } from "react-router-dom";
 
 interface FormData {
   fromAddress: string;
@@ -22,6 +24,8 @@ export const QuoteForm = () => {
   const [step, setStep] = useState(1);
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const session = useSession();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState<FormData>({
     fromAddress: "",
@@ -65,6 +69,18 @@ export const QuoteForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // If user is not logged in, redirect to login
+    if (!session) {
+      toast({
+        title: "Please log in",
+        description: "You need to be logged in to submit a quote request.",
+        variant: "destructive",
+      });
+      navigate("/customer-login");
+      return;
+    }
+
     if (formData.name && formData.email && formData.phone) {
       setIsSubmitting(true);
       try {
@@ -77,6 +93,7 @@ export const QuoteForm = () => {
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
+          user_id: session.user.id, // Add the user_id from the session
         });
 
         if (error) throw error;
