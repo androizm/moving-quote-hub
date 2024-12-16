@@ -2,6 +2,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Users } from "lucide-react";
+import { useCustomerProfile } from "@/hooks/useCustomerProfile";
+import { useSession } from "@supabase/auth-helpers-react";
 
 interface CustomerInfoStepProps {
   formData: {
@@ -14,6 +16,16 @@ interface CustomerInfoStepProps {
 }
 
 export const CustomerInfoStep = ({ formData, onChange }: CustomerInfoStepProps) => {
+  const session = useSession();
+  const { profile, isLoading } = useCustomerProfile();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  const isLoggedIn = !!session;
+  const fullName = profile ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim() : '';
+
   return (
     <div className="grid md:grid-cols-2 gap-6">
       <div className="space-y-2">
@@ -25,9 +37,10 @@ export const CustomerInfoStep = ({ formData, onChange }: CustomerInfoStepProps) 
             name="name"
             className="pl-10"
             placeholder="Enter your full name"
-            value={formData.name}
+            value={isLoggedIn ? fullName : formData.name}
             onChange={onChange}
             required
+            readOnly={isLoggedIn}
           />
         </div>
       </div>
@@ -38,9 +51,10 @@ export const CustomerInfoStep = ({ formData, onChange }: CustomerInfoStepProps) 
           name="email"
           type="email"
           placeholder="Enter your email"
-          value={formData.email}
+          value={isLoggedIn ? session.user.email : formData.email}
           onChange={onChange}
           required
+          readOnly={isLoggedIn}
         />
       </div>
       <div className="space-y-2">
@@ -50,9 +64,10 @@ export const CustomerInfoStep = ({ formData, onChange }: CustomerInfoStepProps) 
           name="phone"
           type="tel"
           placeholder="Enter your phone number"
-          value={formData.phone}
+          value={isLoggedIn ? (profile?.phone || '') : formData.phone}
           onChange={onChange}
           required
+          readOnly={isLoggedIn}
         />
       </div>
       <div className="space-y-2">

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useSession } from "@supabase/auth-helpers-react";
 import { useNavigate } from "react-router-dom";
@@ -34,8 +34,35 @@ export const useQuoteForm = () => {
   const session = useSession();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const initializeFormData = async () => {
+      if (session?.user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("first_name, last_name, phone")
+          .eq("id", session.user.id)
+          .single();
+
+        if (profile) {
+          const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim();
+          setFormData(prev => ({
+            ...prev,
+            name: fullName,
+            email: session.user.email || '',
+            phone: profile.phone || '',
+          }));
+        }
+      }
+    };
+
+    initializeFormData();
+  }, [session]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+    if (session && (name === 'name' || name === 'email' || name === 'phone')) {
+      return; // Prevent changes to auto-filled fields when logged in
+    }
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -78,46 +105,38 @@ export const useQuoteForm = () => {
       return;
     }
 
-    if (formData.name && formData.email && formData.phone) {
-      setIsSubmitting(true);
-      try {
-        const { error } = await supabase.from("quote_requests").insert({
-          from_address: formData.fromAddress,
-          to_address: formData.toAddress,
-          move_date: formData.moveDate,
-          room_count: parseInt(formData.roomCount),
-          special_items: formData.specialItems || null,
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          user_id: session.user.id,
-        });
+    setIsSubmitting(true);
+    try {
+      const { error } = await supabase.from("quote_requests").insert({
+        from_address: formData.fromAddress,
+        to_address: formData.toAddress,
+        move_date: formData.moveDate,
+        room_count: parseInt(formData.roomCount),
+        special_items: formData.specialItems || null,
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        user_id: session.user.id,
+      });
 
-        if (error) throw error;
+      if (error) throw error;
 
-        toast({
-          title: "Quote Request Submitted",
-          description: "We'll connect you with moving companies soon!",
-        });
-
-        setFormData(initialFormData);
-        setStep(1);
-      } catch (error) {
-        console.error("Error submitting quote request:", error);
-        toast({
-          title: "Error submitting request",
-          description: "Please try again later.",
-          variant: "destructive",
-        });
-      } finally {
-        setIsSubmitting(false);
-      }
-    } else {
       toast({
-        title: "Please fill in all required fields",
-        description: "Name, email, and phone number are required.",
+        title: "Quote Request Submitted",
+        description: "We'll connect you with moving companies soon!",
+      });
+
+      setFormData(initialFormData);
+      setStep(1);
+    } catch (error) {
+      console.error("Error submitting quote request:", error);
+      toast({
+        title: "Error submitting request",
+        description: "Please try again later.",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
