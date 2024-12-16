@@ -29,6 +29,13 @@ const CompanyAuth = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
+  const handleAuthError = (error: Error) => {
+    console.error("Auth error:", error);
+    if (error.message.includes("User already registered")) {
+      setError("This email is already registered. Please sign in instead.");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 p-4">
       <Button
@@ -64,6 +71,7 @@ const CompanyAuth = () => {
             redirectTo={window.location.origin + "/company-portal"}
             onlyThirdPartyProviders={false}
             view="sign_in"
+            onError={handleAuthError}
             additionalData={{
               role: 'company'
             }}
