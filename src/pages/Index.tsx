@@ -13,18 +13,18 @@ const Index = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <div className="flex justify-center mb-8">
+          <div className="flex justify-end mb-8">
             <img 
               src="/lovable-uploads/b80fee90-dab2-4bb4-a949-68a2ee6bbbe6.png" 
               alt="MoveShop24 Logo" 
-              className="h-12 md:h-16"
+              className="h-16 md:h-24"
             />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
             Find Your Perfect Moving Company
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Compare quotes from trusted moving companies and choose the best option for your needs
+            Compare quotes from trusted moving companies and save up to 40%
           </p>
         </motion.div>
 
