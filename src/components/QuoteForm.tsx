@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { MovingDetailsStep } from "./form-steps/MovingDetailsStep";
 import { CustomerInfoStep } from "./form-steps/CustomerInfoStep";
+import { supabase } from "@/integrations/supabase/client";
 
 interface FormData {
   fromAddress: string;
@@ -20,6 +21,7 @@ interface FormData {
 export const QuoteForm = () => {
   const [step, setStep] = useState(1);
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState<FormData>({
     fromAddress: "",
@@ -61,25 +63,50 @@ export const QuoteForm = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.name && formData.email && formData.phone) {
-      console.log("Form submitted:", formData);
-      toast({
-        title: "Quote Request Submitted",
-        description: "We'll connect you with moving companies soon!",
-      });
-      setFormData({
-        fromAddress: "",
-        toAddress: "",
-        moveDate: "",
-        roomCount: "",
-        specialItems: "",
-        name: "",
-        email: "",
-        phone: "",
-      });
-      setStep(1);
+      setIsSubmitting(true);
+      try {
+        const { error } = await supabase.from("quote_requests").insert({
+          from_address: formData.fromAddress,
+          to_address: formData.toAddress,
+          move_date: formData.moveDate,
+          room_count: parseInt(formData.roomCount),
+          special_items: formData.specialItems || null,
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+        });
+
+        if (error) throw error;
+
+        toast({
+          title: "Quote Request Submitted",
+          description: "We'll connect you with moving companies soon!",
+        });
+
+        setFormData({
+          fromAddress: "",
+          toAddress: "",
+          moveDate: "",
+          roomCount: "",
+          specialItems: "",
+          name: "",
+          email: "",
+          phone: "",
+        });
+        setStep(1);
+      } catch (error) {
+        console.error("Error submitting quote request:", error);
+        toast({
+          title: "Error submitting request",
+          description: "Please try again later.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsSubmitting(false);
+      }
     } else {
       toast({
         title: "Please fill in all required fields",
@@ -121,7 +148,9 @@ export const QuoteForm = () => {
               Next <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           ) : (
-            <Button type="submit">Get Quotes</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Submitting..." : "Get Quotes"}
+            </Button>
           )}
         </div>
       </form>

@@ -45,6 +45,54 @@ export type Database = {
         }
         Relationships: []
       }
+      quote_requests: {
+        Row: {
+          created_at: string
+          email: string
+          from_address: string
+          id: string
+          move_date: string
+          name: string
+          phone: string
+          room_count: number
+          special_items: string | null
+          status: string | null
+          to_address: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          from_address: string
+          id?: string
+          move_date: string
+          name: string
+          phone: string
+          room_count: number
+          special_items?: string | null
+          status?: string | null
+          to_address: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          from_address?: string
+          id?: string
+          move_date?: string
+          name?: string
+          phone?: string
+          room_count?: number
+          special_items?: string | null
+          status?: string | null
+          to_address?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

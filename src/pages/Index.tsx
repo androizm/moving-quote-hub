@@ -17,7 +17,7 @@ const Index = () => {
             <img 
               src="/lovable-uploads/c266e933-1dde-46e4-9426-20c051352b6a.png" 
               alt="MoveShop24 Logo" 
-              className="h-16 md:h-24"
+              className="h-12 md:h-16"
             />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
