@@ -32,6 +32,12 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    console.log("Starting quote notification process");
+    
+    if (!RESEND_API_KEY) {
+      throw new Error("RESEND_API_KEY is not set");
+    }
+
     const { quoteRequest } = await req.json();
     console.log("Received quote request:", quoteRequest);
 
@@ -39,11 +45,22 @@ const handler = async (req: Request): Promise<Response> => {
     const fromZip = quoteRequest.from_address.match(/\d{5}/)?.[0];
     const toZip = quoteRequest.to_address.match(/\d{5}/)?.[0];
 
-    const { data: companies } = await supabase
+    console.log("Extracted ZIP codes:", { fromZip, toZip });
+
+    if (!fromZip || !toZip) {
+      throw new Error("Could not extract ZIP codes from addresses");
+    }
+
+    const { data: companies, error: companiesError } = await supabase
       .from("profiles")
       .select("email, company_name")
       .eq("role", "company")
       .or(`service_zip_codes.cs.{${fromZip}},service_zip_codes.cs.{${toZip}}`);
+
+    if (companiesError) {
+      console.error("Error fetching companies:", companiesError);
+      throw companiesError;
+    }
 
     console.log("Found matching companies:", companies);
 
@@ -60,7 +77,10 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send email to each matching company
     const emailPromises = companies.map(async (company) => {
-      if (!company.email) return; // Skip if company has no email
+      if (!company.email) {
+        console.log(`Skipping company with no email: ${company.company_name}`);
+        return;
+      }
 
       const emailHtml = `
         <h2>New Moving Quote Request</h2>
@@ -82,6 +102,8 @@ const handler = async (req: Request): Promise<Response> => {
         <p>Please log in to your dashboard to submit a quote.</p>
       `;
 
+      console.log(`Sending email to ${company.email}`);
+
       const res = await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: {
@@ -96,13 +118,15 @@ const handler = async (req: Request): Promise<Response> => {
         }),
       });
 
+      const responseText = await res.text();
+      console.log(`Resend API response for ${company.email}:`, responseText);
+
       if (!res.ok) {
-        const error = await res.text();
         console.error(
           `Failed to send email to ${company.email}:`,
-          error
+          responseText
         );
-        return { success: false, company: company.email, error };
+        return { success: false, company: company.email, error: responseText };
       }
 
       console.log(`Email sent successfully to ${company.email}`);
