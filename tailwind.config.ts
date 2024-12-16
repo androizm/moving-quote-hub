@@ -25,9 +25,9 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#2DD4BF",
+          DEFAULT: "#FF914D",
           foreground: "#FFFFFF",
-          hover: "#14B8A6",
+          hover: "#F97316",
         },
         secondary: {
           DEFAULT: "#F3F4F6",
@@ -38,7 +38,7 @@ export default {
           foreground: "#6B7280",
         },
         accent: {
-          DEFAULT: "#2DD4BF",
+          DEFAULT: "#FF914D",
           foreground: "#FFFFFF",
         },
       },
