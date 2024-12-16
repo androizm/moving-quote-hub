@@ -13,9 +13,9 @@ const Index = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <div className="flex justify-end mb-8">
+          <div className="flex justify-start mb-8">
             <img 
-              src="/lovable-uploads/b80fee90-dab2-4bb4-a949-68a2ee6bbbe6.png" 
+              src="/lovable-uploads/c266e933-1dde-46e4-9426-20c051352b6a.png" 
               alt="MoveShop24 Logo" 
               className="h-16 md:h-24"
             />
