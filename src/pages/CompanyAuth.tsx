@@ -1,13 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Info } from "lucide-react";
 
 const CompanyAuth = () => {
   const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -36,6 +39,20 @@ const CompanyAuth = () => {
       <div className="max-w-md mx-auto">
         <div className="bg-white p-8 rounded-xl shadow-sm">
           <h1 className="text-2xl font-bold mb-6 text-center">Company Login</h1>
+          
+          <Alert className="mb-6">
+            <Info className="h-4 w-4" />
+            <AlertDescription>
+              Password must be at least 6 characters long.
+            </AlertDescription>
+          </Alert>
+
+          {error && (
+            <Alert variant="destructive" className="mb-6">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+
           <Auth
             supabaseClient={supabase}
             appearance={{ theme: ThemeSupa }}
@@ -45,6 +62,10 @@ const CompanyAuth = () => {
             view="sign_in"
             additionalData={{
               role: 'company'
+            }}
+            onError={(error) => {
+              console.error("Auth error:", error);
+              setError(error.message);
             }}
           />
         </div>
