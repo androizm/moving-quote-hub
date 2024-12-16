@@ -2,6 +2,8 @@ import { motion } from "framer-motion";
 import { QuoteForm } from "@/components/QuoteForm";
 import { LoginSection } from "@/components/LoginSection";
 import { Testimonials } from "@/components/Testimonials";
+import { HowItWorks } from "@/components/HowItWorks";
+import { Footer } from "@/components/Footer";
 import { useSession } from "@supabase/auth-helpers-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -56,8 +58,10 @@ const Index = () => {
 
         <QuoteForm />
         <LoginSection />
+        <HowItWorks />
         <Testimonials />
       </div>
+      <Footer />
     </div>
   );
 };
