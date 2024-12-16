@@ -29,26 +29,18 @@ const CustomerAuth = () => {
       }
     );
 
-    // Handle auth errors through the error callback
-    const { data: authListener } = supabase.auth.onAuthStateChange((event) => {
-      console.log("Auth event:", event);
-      if (event === "USER_DELETED") {
+    // Listen for auth errors
+    supabase.auth.onError((error) => {
+      console.error("Auth error:", error);
+      if (error.message.includes("User already registered")) {
         setError("This email is already registered. Please sign in instead.");
       }
     });
 
     return () => {
       subscription.unsubscribe();
-      authListener.subscription.unsubscribe();
     };
   }, [navigate]);
-
-  const handleAuthError = (error: Error) => {
-    console.error("Auth error:", error);
-    if (error.message.includes("User already registered")) {
-      setError("This email is already registered. Please sign in instead.");
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 p-4">
@@ -85,7 +77,6 @@ const CustomerAuth = () => {
             redirectTo={window.location.origin + "/customer-portal"}
             onlyThirdPartyProviders={false}
             view="sign_in"
-            onError={handleAuthError}
             additionalData={{
               role: 'customer'
             }}
