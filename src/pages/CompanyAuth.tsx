@@ -19,6 +19,10 @@ const CompanyAuth = () => {
           console.log("Company signed in:", session);
           navigate("/company-portal");
         }
+        if (event === "SIGNED_OUT") {
+          console.log("Company signed out");
+          setError(null);
+        }
       }
     );
 
@@ -62,10 +66,6 @@ const CompanyAuth = () => {
             view="sign_in"
             additionalData={{
               role: 'company'
-            }}
-            onError={(error) => {
-              console.error("Auth error:", error);
-              setError(error.message);
             }}
           />
         </div>

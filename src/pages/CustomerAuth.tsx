@@ -19,6 +19,10 @@ const CustomerAuth = () => {
           console.log("Customer signed in:", session);
           navigate("/customer-portal");
         }
+        if (event === "SIGNED_OUT") {
+          console.log("Customer signed out");
+          setError(null);
+        }
       }
     );
 
@@ -62,10 +66,6 @@ const CustomerAuth = () => {
             view="sign_in"
             additionalData={{
               role: 'customer'
-            }}
-            onError={(error) => {
-              console.error("Auth error:", error);
-              setError(error.message);
             }}
           />
         </div>
