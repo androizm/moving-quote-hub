@@ -11,10 +11,10 @@ const CompanyAuth = () => {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         if (event === "SIGNED_IN") {
           console.log("Company signed in:", session);
-          navigate("/");
+          navigate("/company-portal");
         }
       }
     );
@@ -40,7 +40,7 @@ const CompanyAuth = () => {
             supabaseClient={supabase}
             appearance={{ theme: ThemeSupa }}
             providers={[]}
-            redirectTo={window.location.origin}
+            redirectTo={window.location.origin + "/company-portal"}
             onlyThirdPartyProviders={false}
             view="sign_in"
             additionalData={{

@@ -9,6 +9,8 @@ import { supabase } from "@/integrations/supabase/client";
 import Index from "./pages/Index";
 import CustomerAuth from "./pages/CustomerAuth";
 import CompanyAuth from "./pages/CompanyAuth";
+import CustomerPortal from "./pages/CustomerPortal";
+import CompanyPortal from "./pages/CompanyPortal";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +26,8 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/customer-login" element={<CustomerAuth />} />
               <Route path="/company-login" element={<CompanyAuth />} />
+              <Route path="/customer-portal" element={<CustomerPortal />} />
+              <Route path="/company-portal" element={<CompanyPortal />} />
             </Routes>
           </AnimatePresence>
         </BrowserRouter>
