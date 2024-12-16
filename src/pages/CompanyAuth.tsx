@@ -24,7 +24,7 @@ const CompanyAuth = () => {
           setError(null);
         }
         // Handle registration error
-        if (event === "SIGNED_UP" && !session) {
+        if (event === "INITIAL_SESSION" && !session) {
           console.log("Sign up failed");
           setError("This email is already registered. Please sign in instead.");
         }
