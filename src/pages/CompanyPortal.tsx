@@ -6,6 +6,22 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LogOut } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { format } from "date-fns";
+
+interface QuoteRequest {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  from_address: string;
+  to_address: string;
+  move_date: string;
+  room_count: number;
+  special_items: string | null;
+  status: string;
+  created_at: string;
+}
 
 const CompanyPortal = () => {
   const session = useSession();
@@ -13,6 +29,7 @@ const CompanyPortal = () => {
   const { toast } = useToast();
   const [zipCode, setZipCode] = useState("");
   const [servicedZipCodes, setServicedZipCodes] = useState<string[]>([]);
+  const [quoteRequests, setQuoteRequests] = useState<QuoteRequest[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -49,6 +66,43 @@ const CompanyPortal = () => {
 
     checkRole();
   }, [session, navigate, toast]);
+
+  useEffect(() => {
+    const fetchQuoteRequests = async () => {
+      if (!servicedZipCodes.length) return;
+
+      const { data, error } = await supabase
+        .from("quote_requests")
+        .select("*")
+        .in("status", ["pending", "new"])
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching quote requests:", error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to load quote requests",
+        });
+        return;
+      }
+
+      // Filter quotes based on ZIP codes
+      const filteredQuotes = data.filter(quote => {
+        const fromZip = quote.from_address.match(/\b\d{5}\b/)?.[0];
+        const toZip = quote.to_address.match(/\b\d{5}\b/)?.[0];
+        return (
+          fromZip && 
+          toZip && 
+          (servicedZipCodes.includes(fromZip) || servicedZipCodes.includes(toZip))
+        );
+      });
+
+      setQuoteRequests(filteredQuotes);
+    };
+
+    fetchQuoteRequests();
+  }, [servicedZipCodes, toast]);
 
   const handleAddZipCode = async () => {
     if (!zipCode.match(/^\d{5}$/)) {
@@ -137,10 +191,47 @@ const CompanyPortal = () => {
           </Button>
         </div>
         
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6">
           <div className="bg-white p-6 rounded-lg shadow-sm">
             <h2 className="text-xl font-semibold mb-4">Quote Requests</h2>
-            <p className="text-gray-600">No new quote requests.</p>
+            {quoteRequests.length > 0 ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Customer</TableHead>
+                    <TableHead>From</TableHead>
+                    <TableHead>To</TableHead>
+                    <TableHead>Move Date</TableHead>
+                    <TableHead>Rooms</TableHead>
+                    <TableHead>Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {quoteRequests.map((quote) => (
+                    <TableRow key={quote.id}>
+                      <TableCell>{format(new Date(quote.created_at), 'MMM d, yyyy')}</TableCell>
+                      <TableCell>
+                        <div>{quote.name}</div>
+                        <div className="text-sm text-gray-500">{quote.email}</div>
+                        <div className="text-sm text-gray-500">{quote.phone}</div>
+                      </TableCell>
+                      <TableCell>{quote.from_address}</TableCell>
+                      <TableCell>{quote.to_address}</TableCell>
+                      <TableCell>{format(new Date(quote.move_date), 'MMM d, yyyy')}</TableCell>
+                      <TableCell>{quote.room_count}</TableCell>
+                      <TableCell>
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                          {quote.status}
+                        </span>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <p className="text-gray-600">No quote requests matching your service areas.</p>
+            )}
           </div>
           
           <div className="bg-white p-6 rounded-lg shadow-sm">
