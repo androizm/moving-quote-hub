@@ -107,19 +107,37 @@ export const useQuoteForm = () => {
 
     setIsSubmitting(true);
     try {
-      const { error } = await supabase.from("quote_requests").insert({
-        from_address: formData.fromAddress,
-        to_address: formData.toAddress,
-        move_date: formData.moveDate,
-        room_count: parseInt(formData.roomCount),
-        special_items: formData.specialItems || null,
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        user_id: session.user.id,
-      });
+      // Insert the quote request
+      const { data: quoteRequest, error } = await supabase
+        .from("quote_requests")
+        .insert({
+          from_address: formData.fromAddress,
+          to_address: formData.toAddress,
+          move_date: formData.moveDate,
+          room_count: parseInt(formData.roomCount),
+          special_items: formData.specialItems || null,
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          user_id: session.user.id,
+        })
+        .select()
+        .single();
 
       if (error) throw error;
+
+      // Send email notifications to matching companies
+      const { error: emailError } = await supabase.functions.invoke(
+        "send-quote-notification",
+        {
+          body: { quoteRequest },
+        }
+      );
+
+      if (emailError) {
+        console.error("Error sending email notifications:", emailError);
+        // Don't throw here, we still want to show success for the quote submission
+      }
 
       toast({
         title: "Quote Request Submitted",
