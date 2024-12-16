@@ -4,10 +4,10 @@ import { useSession } from "@supabase/auth-helpers-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { LogOut } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { format } from "date-fns";
+import { CompanyHeader } from "@/components/company/CompanyHeader";
 
 interface QuoteRequest {
   id: string;
@@ -183,13 +183,7 @@ const CompanyPortal = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 p-6">
       <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Company Dashboard</h1>
-          <Button variant="outline" onClick={handleSignOut}>
-            <LogOut className="w-4 h-4 mr-2" />
-            Sign Out
-          </Button>
-        </div>
+        <CompanyHeader />
         
         <div className="grid gap-6">
           <div className="bg-white p-6 rounded-lg shadow-sm">

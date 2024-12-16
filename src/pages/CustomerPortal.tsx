@@ -4,10 +4,12 @@ import { useSession } from "@supabase/auth-helpers-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 const CustomerPortal = () => {
   const session = useSession();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (!session) {
@@ -32,6 +34,10 @@ const CustomerPortal = () => {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
+    toast({
+      title: "Signed out successfully",
+      description: "You have been logged out of your account.",
+    });
     navigate("/");
   };
 
@@ -40,8 +46,8 @@ const CustomerPortal = () => {
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Customer Dashboard</h1>
-          <Button variant="outline" onClick={handleSignOut}>
-            <LogOut className="w-4 h-4 mr-2" />
+          <Button variant="outline" onClick={handleSignOut} className="flex items-center gap-2">
+            <LogOut className="h-4 w-4" />
             Sign Out
           </Button>
         </div>
