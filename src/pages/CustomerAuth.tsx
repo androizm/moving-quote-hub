@@ -26,16 +26,13 @@ const CustomerAuth = () => {
         if (event === "USER_UPDATED") {
           console.log("Customer profile updated");
         }
+        // Handle registration error
+        if (event === "SIGNED_UP" && !session) {
+          console.log("Sign up failed");
+          setError("This email is already registered. Please sign in instead.");
+        }
       }
     );
-
-    // Listen for auth errors
-    supabase.auth.onError((error) => {
-      console.error("Auth error:", error);
-      if (error.message.includes("User already registered")) {
-        setError("This email is already registered. Please sign in instead.");
-      }
-    });
 
     return () => {
       subscription.unsubscribe();
