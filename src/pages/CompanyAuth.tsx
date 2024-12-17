@@ -7,10 +7,14 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Info } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const CompanyAuth = () => {
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
+  const [phone, setPhone] = useState("");
+  const [showPhoneInput, setShowPhoneInput] = useState(false);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -22,8 +26,11 @@ const CompanyAuth = () => {
         if (event === "SIGNED_OUT") {
           console.log("Company signed out");
           setError(null);
+          setShowPhoneInput(false);
         }
-        // Handle registration error
+        if (event === "USER_UPDATED") {
+          console.log("Company profile updated");
+        }
         if (event === "INITIAL_SESSION" && !session) {
           console.log("Sign up failed");
           setError("This email is already registered. Please sign in instead.");
@@ -33,6 +40,30 @@ const CompanyAuth = () => {
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  const handlePhoneSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const { data: { session }, error: signUpError } = await supabase.auth.signUp({
+        email: (e.target as HTMLFormElement).email.value,
+        password: (e.target as HTMLFormElement).password.value,
+        options: {
+          data: {
+            phone,
+            role: 'company'
+          }
+        }
+      });
+
+      if (signUpError) throw signUpError;
+      if (session) {
+        navigate("/company-portal");
+      }
+    } catch (err: any) {
+      setError(err.message);
+      setShowPhoneInput(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 p-4">
@@ -62,17 +93,35 @@ const CompanyAuth = () => {
             </Alert>
           )}
 
-          <Auth
-            supabaseClient={supabase}
-            appearance={{ theme: ThemeSupa }}
-            providers={[]}
-            redirectTo={window.location.origin + "/company-portal"}
-            onlyThirdPartyProviders={false}
-            view="sign_in"
-            additionalData={{
-              role: 'company'
-            }}
-          />
+          {showPhoneInput ? (
+            <form onSubmit={handlePhoneSubmit} className="space-y-4">
+              <div>
+                <Label htmlFor="phone">Phone Number</Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="Enter your phone number"
+                  required
+                />
+              </div>
+              <Button type="submit" className="w-full">Complete Sign Up</Button>
+            </form>
+          ) : (
+            <Auth
+              supabaseClient={supabase}
+              appearance={{ theme: ThemeSupa }}
+              providers={[]}
+              redirectTo={window.location.origin + "/company-portal"}
+              onlyThirdPartyProviders={false}
+              view="sign_in"
+              onSignUp={() => setShowPhoneInput(true)}
+              additionalData={{
+                role: 'company'
+              }}
+            />
+          )}
         </div>
       </div>
     </div>
