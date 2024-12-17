@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Info } from "lucide-react";
+import { Info, Phone } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -22,7 +22,7 @@ const CompanyAuth = () => {
         console.log("Auth event:", event);
         if (event === "SIGNED_IN") {
           console.log("Company signed in:", session);
-          navigate("/company-portal");
+          setShowPhoneInput(true);
         }
         if (event === "SIGNED_OUT") {
           console.log("Company signed out");
@@ -31,6 +31,7 @@ const CompanyAuth = () => {
         }
         if (event === "USER_UPDATED") {
           console.log("Company profile updated");
+          navigate("/company-portal");
         }
       }
     );
@@ -86,14 +87,20 @@ const CompanyAuth = () => {
             <form onSubmit={handlePhoneSubmit} className="space-y-4">
               <div>
                 <Label htmlFor="phone">Phone Number</Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="Enter your phone number"
-                  required
-                />
+                <div className="relative">
+                  <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
+                  <Input
+                    id="phone"
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="pl-10"
+                    placeholder="Enter your phone number"
+                    pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
+                    title="Please enter a valid 10-digit phone number"
+                    required
+                  />
+                </div>
               </div>
               <Button type="submit" className="w-full">Complete Sign Up</Button>
             </form>
@@ -103,8 +110,6 @@ const CompanyAuth = () => {
               appearance={{ theme: ThemeSupa }}
               providers={[]}
               redirectTo={window.location.origin + "/company-portal"}
-              onlyThirdPartyProviders={false}
-              view="sign_in"
             />
           )}
         </div>
