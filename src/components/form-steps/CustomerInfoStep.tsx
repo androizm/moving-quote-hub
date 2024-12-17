@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Users } from "lucide-react";
+import { Users, Phone } from "lucide-react";
 import { useCustomerProfile } from "@/hooks/useCustomerProfile";
 import { useSession } from "@supabase/auth-helpers-react";
 
@@ -59,16 +59,22 @@ export const CustomerInfoStep = ({ formData, onChange }: CustomerInfoStepProps) 
       </div>
       <div className="space-y-2">
         <Label htmlFor="phone">Phone Number</Label>
-        <Input
-          id="phone"
-          name="phone"
-          type="tel"
-          placeholder="Enter your phone number"
-          value={isLoggedIn ? (profile?.phone || '') : formData.phone}
-          onChange={onChange}
-          required
-          readOnly={isLoggedIn}
-        />
+        <div className="relative">
+          <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
+          <Input
+            id="phone"
+            name="phone"
+            type="tel"
+            className="pl-10"
+            placeholder="Enter your phone number"
+            value={isLoggedIn ? (profile?.phone || '') : formData.phone}
+            onChange={onChange}
+            pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
+            title="Please enter a valid 10-digit phone number"
+            required
+            readOnly={isLoggedIn}
+          />
+        </div>
       </div>
       <div className="space-y-2">
         <Label htmlFor="specialItems">Special Items</Label>
