@@ -19,6 +19,7 @@ const CompanyAuth = () => {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        console.log("Auth event:", event);
         if (event === "SIGNED_IN") {
           console.log("Company signed in:", session);
           navigate("/company-portal");
@@ -31,10 +32,6 @@ const CompanyAuth = () => {
         if (event === "USER_UPDATED") {
           console.log("Company profile updated");
         }
-        if (event === "INITIAL_SESSION" && !session) {
-          console.log("Sign up failed");
-          setError("This email is already registered. Please sign in instead.");
-        }
       }
     );
 
@@ -44,22 +41,14 @@ const CompanyAuth = () => {
   const handlePhoneSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const { data: { session }, error: signUpError } = await supabase.auth.signUp({
-        email: (e.target as HTMLFormElement).email.value,
-        password: (e.target as HTMLFormElement).password.value,
-        options: {
-          data: {
-            phone,
-            role: 'company'
-          }
-        }
+      const { error: updateError } = await supabase.auth.updateUser({
+        data: { phone, role: 'company' }
       });
 
-      if (signUpError) throw signUpError;
-      if (session) {
-        navigate("/company-portal");
-      }
+      if (updateError) throw updateError;
+      navigate("/company-portal");
     } catch (err: any) {
+      console.error("Error updating user:", err);
       setError(err.message);
       setShowPhoneInput(false);
     }
@@ -116,10 +105,6 @@ const CompanyAuth = () => {
               redirectTo={window.location.origin + "/company-portal"}
               onlyThirdPartyProviders={false}
               view="sign_in"
-              onSignUp={() => setShowPhoneInput(true)}
-              additionalData={{
-                role: 'company'
-              }}
             />
           )}
         </div>

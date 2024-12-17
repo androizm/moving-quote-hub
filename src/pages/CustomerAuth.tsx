@@ -19,6 +19,7 @@ const CustomerAuth = () => {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        console.log("Auth event:", event);
         if (event === "SIGNED_IN") {
           console.log("Customer signed in:", session);
           navigate("/customer-portal");
@@ -31,37 +32,23 @@ const CustomerAuth = () => {
         if (event === "USER_UPDATED") {
           console.log("Customer profile updated");
         }
-        if (event === "INITIAL_SESSION" && !session) {
-          console.log("Sign up failed");
-          setError("This email is already registered. Please sign in instead.");
-        }
       }
     );
 
-    return () => {
-      subscription.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, [navigate]);
 
   const handlePhoneSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const { data: { session }, error: signUpError } = await supabase.auth.signUp({
-        email: (e.target as HTMLFormElement).email.value,
-        password: (e.target as HTMLFormElement).password.value,
-        options: {
-          data: {
-            phone,
-            role: 'customer'
-          }
-        }
+      const { error: updateError } = await supabase.auth.updateUser({
+        data: { phone, role: 'customer' }
       });
 
-      if (signUpError) throw signUpError;
-      if (session) {
-        navigate("/customer-portal");
-      }
+      if (updateError) throw updateError;
+      navigate("/customer-portal");
     } catch (err: any) {
+      console.error("Error updating user:", err);
       setError(err.message);
       setShowPhoneInput(false);
     }
@@ -118,10 +105,6 @@ const CustomerAuth = () => {
               redirectTo={window.location.origin + "/customer-portal"}
               onlyThirdPartyProviders={false}
               view="sign_in"
-              onSignUp={() => setShowPhoneInput(true)}
-              additionalData={{
-                role: 'customer'
-              }}
             />
           )}
         </div>
