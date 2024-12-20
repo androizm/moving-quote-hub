@@ -97,7 +97,7 @@ const CustomerPortal = () => {
                     <TableRow>
                       <TableHead>From</TableHead>
                       <TableHead>To</TableHead>
-                      <TableHead>Move Date</TableHead>
+                      <TableHead>Move Dates</TableHead>
                       <TableHead>Status</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -107,7 +107,7 @@ const CustomerPortal = () => {
                         <TableCell>{quote.from_address}</TableCell>
                         <TableCell>{quote.to_address}</TableCell>
                         <TableCell>
-                          {new Date(quote.move_date).toLocaleDateString()}
+                          {new Date(quote.move_date_start).toLocaleDateString()} - {new Date(quote.move_date_end).toLocaleDateString()}
                         </TableCell>
                         <TableCell className="capitalize">{quote.status}</TableCell>
                       </TableRow>
