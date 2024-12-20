@@ -9,7 +9,7 @@ export interface QuoteFormData {
   toAddress: string;
   moveDateStart: string;
   moveDateEnd: string;
-  roomCount: string;
+  livingSpaceSqm: string;
   specialItems: string;
   name: string;
   email: string;
@@ -21,7 +21,7 @@ const initialFormData: QuoteFormData = {
   toAddress: "",
   moveDateStart: "",
   moveDateEnd: "",
-  roomCount: "",
+  livingSpaceSqm: "",
   specialItems: "",
   name: "",
   email: "",
@@ -77,7 +77,8 @@ export const useQuoteForm = () => {
       formData.toAddress.trim() !== "" &&
       formData.moveDateStart !== "" &&
       formData.moveDateEnd !== "" &&
-      formData.roomCount !== "" &&
+      formData.livingSpaceSqm !== "" &&
+      parseFloat(formData.livingSpaceSqm) > 0 &&
       new Date(formData.moveDateEnd) >= new Date(formData.moveDateStart)
     );
   };
@@ -88,7 +89,7 @@ export const useQuoteForm = () => {
     } else {
       toast({
         title: "Please fill in all required fields",
-        description: "All fields are required and the end date must be after or equal to the start date.",
+        description: "All fields are required, living space must be greater than 0, and the end date must be after or equal to the start date.",
         variant: "destructive",
       });
     }
@@ -118,7 +119,7 @@ export const useQuoteForm = () => {
           to_address: formData.toAddress,
           move_date_start: formData.moveDateStart,
           move_date_end: formData.moveDateEnd,
-          room_count: parseInt(formData.roomCount),
+          living_space_sqm: parseFloat(formData.livingSpaceSqm),
           special_items: formData.specialItems || null,
           name: formData.name,
           email: formData.email,

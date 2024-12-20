@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { MapPin, Calendar, Box } from "lucide-react";
+import { MapPin, Calendar, Ruler } from "lucide-react";
 
 interface MovingDetailsStepProps {
   formData: {
@@ -8,7 +8,7 @@ interface MovingDetailsStepProps {
     toAddress: string;
     moveDateStart: string;
     moveDateEnd: string;
-    roomCount: string;
+    livingSpaceSqm: string;
   };
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -79,19 +79,20 @@ export const MovingDetailsStep = ({ formData, onChange }: MovingDetailsStepProps
         </div>
       </div>
       <div className="space-y-2">
-        <Label htmlFor="roomCount">Number of Rooms</Label>
+        <Label htmlFor="livingSpaceSqm">Living Space (m²)</Label>
         <div className="relative">
-          <Box className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
+          <Ruler className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
           <Input
-            id="roomCount"
-            name="roomCount"
+            id="livingSpaceSqm"
+            name="livingSpaceSqm"
             type="number"
             className="pl-10"
-            placeholder="How many rooms?"
-            value={formData.roomCount}
+            placeholder="Enter living space in square meters"
+            value={formData.livingSpaceSqm}
             onChange={onChange}
             required
             min="1"
+            step="0.1"
           />
         </div>
       </div>
