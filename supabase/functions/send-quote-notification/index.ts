@@ -108,6 +108,12 @@ const handler = async (req: Request): Promise<Response> => {
         <p>A new quote request has been submitted that matches your service area:</p>
         <ul>
           <li><strong>Customer:</strong> ${quoteRequest.name}</li>
+          <li><strong>Contact Info:</strong>
+            <ul>
+              <li>Email: ${quoteRequest.email}</li>
+              <li>Phone: ${quoteRequest.phone}</li>
+            </ul>
+          </li>
           <li><strong>From:</strong> ${quoteRequest.from_address}</li>
           <li><strong>To:</strong> ${quoteRequest.to_address}</li>
           <li><strong>Move Date:</strong> ${new Date(
