@@ -7,7 +7,8 @@ import { supabase } from "@/integrations/supabase/client";
 export interface QuoteFormData {
   fromAddress: string;
   toAddress: string;
-  moveDate: string;
+  moveDateStart: string;
+  moveDateEnd: string;
   roomCount: string;
   specialItems: string;
   name: string;
@@ -18,7 +19,8 @@ export interface QuoteFormData {
 const initialFormData: QuoteFormData = {
   fromAddress: "",
   toAddress: "",
-  moveDate: "",
+  moveDateStart: "",
+  moveDateEnd: "",
   roomCount: "",
   specialItems: "",
   name: "",
@@ -73,8 +75,10 @@ export const useQuoteForm = () => {
     return (
       formData.fromAddress.trim() !== "" &&
       formData.toAddress.trim() !== "" &&
-      formData.moveDate !== "" &&
-      formData.roomCount !== ""
+      formData.moveDateStart !== "" &&
+      formData.moveDateEnd !== "" &&
+      formData.roomCount !== "" &&
+      new Date(formData.moveDateEnd) >= new Date(formData.moveDateStart)
     );
   };
 
@@ -84,7 +88,7 @@ export const useQuoteForm = () => {
     } else {
       toast({
         title: "Please fill in all required fields",
-        description: "All fields except special items are required.",
+        description: "All fields are required and the end date must be after or equal to the start date.",
         variant: "destructive",
       });
     }
@@ -107,13 +111,13 @@ export const useQuoteForm = () => {
 
     setIsSubmitting(true);
     try {
-      // Insert the quote request
       const { data: quoteRequest, error } = await supabase
         .from("quote_requests")
         .insert({
           from_address: formData.fromAddress,
           to_address: formData.toAddress,
-          move_date: formData.moveDate,
+          move_date_start: formData.moveDateStart,
+          move_date_end: formData.moveDateEnd,
           room_count: parseInt(formData.roomCount),
           special_items: formData.specialItems || null,
           name: formData.name,
@@ -126,7 +130,6 @@ export const useQuoteForm = () => {
 
       if (error) throw error;
 
-      // Send email notifications to matching companies
       const { error: emailError } = await supabase.functions.invoke(
         "send-quote-notification",
         {
@@ -136,7 +139,6 @@ export const useQuoteForm = () => {
 
       if (emailError) {
         console.error("Error sending email notifications:", emailError);
-        // Don't throw here, we still want to show success for the quote submission
       }
 
       toast({

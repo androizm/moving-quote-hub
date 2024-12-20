@@ -6,7 +6,8 @@ interface MovingDetailsStepProps {
   formData: {
     fromAddress: string;
     toAddress: string;
-    moveDate: string;
+    moveDateStart: string;
+    moveDateEnd: string;
     roomCount: string;
   };
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -46,17 +47,34 @@ export const MovingDetailsStep = ({ formData, onChange }: MovingDetailsStepProps
         </div>
       </div>
       <div className="space-y-2">
-        <Label htmlFor="moveDate">Moving Date</Label>
+        <Label htmlFor="moveDateStart">Earliest Move Date</Label>
         <div className="relative">
           <Calendar className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
           <Input
-            id="moveDate"
-            name="moveDate"
+            id="moveDateStart"
+            name="moveDateStart"
             type="date"
             className="pl-10"
-            value={formData.moveDate}
+            value={formData.moveDateStart}
             onChange={onChange}
             required
+            min={new Date().toISOString().split('T')[0]}
+          />
+        </div>
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="moveDateEnd">Latest Move Date</Label>
+        <div className="relative">
+          <Calendar className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
+          <Input
+            id="moveDateEnd"
+            name="moveDateEnd"
+            type="date"
+            className="pl-10"
+            value={formData.moveDateEnd}
+            onChange={onChange}
+            required
+            min={formData.moveDateStart || new Date().toISOString().split('T')[0]}
           />
         </div>
       </div>

@@ -54,7 +54,8 @@ export type Database = {
           email: string
           from_address: string
           id: string
-          move_date: string
+          move_date_end: string
+          move_date_start: string
           name: string
           phone: string
           room_count: number
@@ -69,7 +70,8 @@ export type Database = {
           email: string
           from_address: string
           id?: string
-          move_date: string
+          move_date_end: string
+          move_date_start: string
           name: string
           phone: string
           room_count: number
@@ -84,7 +86,8 @@ export type Database = {
           email?: string
           from_address?: string
           id?: string
-          move_date?: string
+          move_date_end?: string
+          move_date_start?: string
           name?: string
           phone?: string
           room_count?: number

@@ -19,7 +19,7 @@ export const QuoteRequestsTable = ({ quoteRequests }: QuoteRequestsTableProps) =
           <TableHead>Customer</TableHead>
           <TableHead>From</TableHead>
           <TableHead>To</TableHead>
-          <TableHead>Move Date</TableHead>
+          <TableHead>Move Dates</TableHead>
           <TableHead>Rooms</TableHead>
           <TableHead>Status</TableHead>
         </TableRow>
@@ -35,7 +35,11 @@ export const QuoteRequestsTable = ({ quoteRequests }: QuoteRequestsTableProps) =
             </TableCell>
             <TableCell>{quote.from_address}</TableCell>
             <TableCell>{quote.to_address}</TableCell>
-            <TableCell>{format(new Date(quote.move_date), 'MMM d, yyyy')}</TableCell>
+            <TableCell>
+              <div>{format(new Date(quote.move_date_start), 'MMM d, yyyy')}</div>
+              <div className="text-sm text-gray-500">to</div>
+              <div>{format(new Date(quote.move_date_end), 'MMM d, yyyy')}</div>
+            </TableCell>
             <TableCell>{quote.room_count}</TableCell>
             <TableCell>
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
