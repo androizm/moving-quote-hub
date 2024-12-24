@@ -3,18 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { useSession } from "@supabase/auth-helpers-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { LogOut, AlertCircle } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery } from "@tanstack/react-query";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { LoadingState } from "@/components/admin/LoadingState";
+import { ErrorState } from "@/components/admin/ErrorState";
+import { UsersTable } from "@/components/admin/UsersTable";
+import { QuotesTable } from "@/components/admin/QuotesTable";
 
 const SuperAdminPortal = () => {
   const session = useSession();
@@ -94,22 +89,11 @@ const SuperAdminPortal = () => {
   };
 
   if (error) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 p-6 flex items-center justify-center">
-        <Alert variant="destructive" className="max-w-md">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      </div>
-    );
+    return <ErrorState message={error} />;
   }
 
   if (isLoading || !session) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 p-6 flex items-center justify-center">
-        <p className="text-gray-600">Loading...</p>
-      </div>
-    );
+    return <LoadingState />;
   }
 
   return (
@@ -128,77 +112,14 @@ const SuperAdminPortal = () => {
         </div>
 
         <div className="grid gap-8">
-          {/* Users Section */}
           <div className="bg-white p-6 rounded-lg shadow-sm">
             <h2 className="text-xl font-semibold mb-4">Users</h2>
-            {usersLoading ? (
-              <p className="text-gray-600">Loading users...</p>
-            ) : (
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Role</TableHead>
-                      <TableHead>Phone</TableHead>
-                      <TableHead>Company</TableHead>
-                      <TableHead>Created At</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {users?.map((user) => (
-                      <TableRow key={user.id}>
-                        <TableCell>
-                          {user.first_name} {user.last_name}
-                        </TableCell>
-                        <TableCell className="capitalize">{user.role}</TableCell>
-                        <TableCell>{user.phone}</TableCell>
-                        <TableCell>{user.company_name || "-"}</TableCell>
-                        <TableCell>
-                          {new Date(user.created_at).toLocaleDateString()}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            )}
+            <UsersTable users={users || []} isLoading={usersLoading} />
           </div>
 
-          {/* Quotes Section */}
           <div className="bg-white p-6 rounded-lg shadow-sm">
             <h2 className="text-xl font-semibold mb-4">Quote Requests</h2>
-            {quotesLoading ? (
-              <p className="text-gray-600">Loading quotes...</p>
-            ) : (
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Customer</TableHead>
-                      <TableHead>From</TableHead>
-                      <TableHead>To</TableHead>
-                      <TableHead>Move Dates</TableHead>
-                      <TableHead>Status</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {quotes?.map((quote) => (
-                      <TableRow key={quote.id}>
-                        <TableCell>{quote.name}</TableCell>
-                        <TableCell>{quote.from_address}</TableCell>
-                        <TableCell>{quote.to_address}</TableCell>
-                        <TableCell>
-                          {new Date(quote.move_date_start).toLocaleDateString()} -{" "}
-                          {new Date(quote.move_date_end).toLocaleDateString()}
-                        </TableCell>
-                        <TableCell className="capitalize">{quote.status}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            )}
+            <QuotesTable quotes={quotes || []} isLoading={quotesLoading} />
           </div>
         </div>
       </div>
