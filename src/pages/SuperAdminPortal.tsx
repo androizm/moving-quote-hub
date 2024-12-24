@@ -1,9 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSession } from "@supabase/auth-helpers-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
+import { LogOut, AlertCircle } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -14,31 +14,46 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const SuperAdminPortal = () => {
   const session = useSession();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!session) {
-      navigate("/");
-      return;
-    }
+    const checkAccess = async () => {
+      try {
+        if (!session) {
+          navigate("/company-login");
+          return;
+        }
 
-    const checkRole = async () => {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", session.user.id)
-        .single();
+        const { data: profile, error: profileError } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", session.user.id)
+          .single();
 
-      if (profile?.role !== "super_admin") {
-        navigate("/");
+        if (profileError) throw profileError;
+
+        if (profile?.role !== "super_admin") {
+          setError("Access denied. Super admin privileges required.");
+          setTimeout(() => navigate("/"), 3000);
+          return;
+        }
+
+        setIsLoading(false);
+      } catch (err) {
+        console.error("Error checking access:", err);
+        setError("An error occurred while checking access.");
+        setTimeout(() => navigate("/"), 3000);
       }
     };
 
-    checkRole();
+    checkAccess();
   }, [session, navigate]);
 
   const { data: users, isLoading: usersLoading } = useQuery({
@@ -52,6 +67,7 @@ const SuperAdminPortal = () => {
       if (error) throw error;
       return data;
     },
+    enabled: !isLoading && !error,
   });
 
   const { data: quotes, isLoading: quotesLoading } = useQuery({
@@ -65,6 +81,7 @@ const SuperAdminPortal = () => {
       if (error) throw error;
       return data;
     },
+    enabled: !isLoading && !error,
   });
 
   const handleSignOut = async () => {
@@ -75,6 +92,25 @@ const SuperAdminPortal = () => {
     });
     navigate("/");
   };
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 p-6 flex items-center justify-center">
+        <Alert variant="destructive" className="max-w-md">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+
+  if (isLoading || !session) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 p-6 flex items-center justify-center">
+        <p className="text-gray-600">Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 p-6">
