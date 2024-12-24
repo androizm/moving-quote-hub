@@ -20,18 +20,26 @@ export const useCustomerProfile = () => {
         return;
       }
 
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("first_name, last_name, phone")
-        .eq("id", session.user.id)
-        .single();
+      try {
+        console.log("Fetching profile for user:", session.user.id);
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("first_name, last_name, phone")
+          .eq("id", session.user.id)
+          .maybeSingle();
 
-      if (error) {
-        console.error("Error fetching profile:", error);
-      } else {
+        if (error) {
+          console.error("Error fetching profile:", error);
+          throw error;
+        }
+
+        console.log("Profile data received:", data);
         setProfile(data);
+      } catch (error) {
+        console.error("Error in profile fetch:", error);
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
 
     fetchProfile();
