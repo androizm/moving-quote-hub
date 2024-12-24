@@ -11,6 +11,7 @@ import CustomerAuth from "./pages/CustomerAuth";
 import CompanyAuth from "./pages/CompanyAuth";
 import CustomerPortal from "./pages/CustomerPortal";
 import CompanyPortal from "./pages/CompanyPortal";
+import SuperAdminPortal from "./pages/SuperAdminPortal";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const App = () => (
               <Route path="/company-login" element={<CompanyAuth />} />
               <Route path="/customer-portal" element={<CustomerPortal />} />
               <Route path="/company-portal" element={<CompanyPortal />} />
+              <Route path="/super-admin" element={<SuperAdminPortal />} />
             </Routes>
           </AnimatePresence>
         </BrowserRouter>
