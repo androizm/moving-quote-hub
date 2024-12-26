@@ -4,17 +4,49 @@ import { LoginSection } from "@/components/LoginSection";
 import { Testimonials } from "@/components/Testimonials";
 import { HowItWorks } from "@/components/HowItWorks";
 import { Footer } from "@/components/Footer";
-import { useSession } from "@supabase/auth-helpers-react";
+import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import { useEffect } from "react";
 
 const Index = () => {
   const session = useSession();
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  useEffect(() => {
+    const checkUserRole = async () => {
+      if (session?.user) {
+        console.log("Checking user role for:", session.user.id);
+        const { data: profile, error } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", session.user.id)
+          .single();
+
+        if (error) {
+          console.error("Error fetching user role:", error);
+          return;
+        }
+
+        console.log("User profile:", profile);
+
+        // Redirect based on role
+        if (profile?.role === "super_admin") {
+          navigate("/super-admin");
+        } else if (profile?.role === "company") {
+          navigate("/company-portal");
+        } else if (profile?.role === "customer") {
+          navigate("/customer-portal");
+        }
+      }
+    };
+
+    checkUserRole();
+  }, [session, navigate]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
