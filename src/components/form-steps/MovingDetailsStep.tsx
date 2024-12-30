@@ -4,6 +4,7 @@ import { MapPin, CalendarIcon, Ruler } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { useState } from "react";
@@ -16,6 +17,7 @@ interface MovingDetailsStepProps {
     moveDateStart: string;
     moveDateEnd: string;
     livingSpaceSqm: string;
+    moveType: string;
   };
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -46,6 +48,16 @@ export const MovingDetailsStep = ({ formData, onChange }: MovingDetailsStepProps
       } as React.ChangeEvent<HTMLInputElement>;
       onChange(event);
     }
+  };
+
+  const handleMoveTypeChange = (value: string) => {
+    const event = {
+      target: {
+        name: 'moveType',
+        value
+      }
+    } as React.ChangeEvent<HTMLInputElement>;
+    onChange(event);
   };
 
   return (
@@ -79,6 +91,26 @@ export const MovingDetailsStep = ({ formData, onChange }: MovingDetailsStepProps
             required
           />
         </div>
+      </div>
+      <div className="space-y-2 md:col-span-2">
+        <Label>Type of Move</Label>
+        <RadioGroup
+          value={formData.moveType}
+          onValueChange={handleMoveTypeChange}
+          className="grid grid-cols-2 md:grid-cols-4 gap-4"
+        >
+          {[
+            { value: "private", label: "Private" },
+            { value: "business", label: "Business" },
+            { value: "international", label: "International" },
+            { value: "piano", label: "Piano Transport" }
+          ].map((option) => (
+            <div key={option.value} className="flex items-center space-x-2">
+              <RadioGroupItem value={option.value} id={option.value} />
+              <Label htmlFor={option.value}>{option.label}</Label>
+            </div>
+          ))}
+        </RadioGroup>
       </div>
       <div className="space-y-2">
         <Label>Move Dates</Label>
