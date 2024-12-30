@@ -1,6 +1,13 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MapPin, Calendar, Ruler } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { useState } from "react";
+import { DateRange } from "react-day-picker";
 
 interface MovingDetailsStepProps {
   formData: {
@@ -14,6 +21,33 @@ interface MovingDetailsStepProps {
 }
 
 export const MovingDetailsStep = ({ formData, onChange }: MovingDetailsStepProps) => {
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: formData.moveDateStart ? new Date(formData.moveDateStart) : undefined,
+    to: formData.moveDateEnd ? new Date(formData.moveDateEnd) : undefined,
+  });
+
+  const handleDateSelect = (range: DateRange | undefined) => {
+    setDate(range);
+    if (range?.from) {
+      const event = {
+        target: {
+          name: 'moveDateStart',
+          value: format(range.from, 'yyyy-MM-dd')
+        }
+      } as React.ChangeEvent<HTMLInputElement>;
+      onChange(event);
+    }
+    if (range?.to) {
+      const event = {
+        target: {
+          name: 'moveDateEnd',
+          value: format(range.to, 'yyyy-MM-dd')
+        }
+      } as React.ChangeEvent<HTMLInputElement>;
+      onChange(event);
+    }
+  };
+
   return (
     <div className="grid md:grid-cols-2 gap-6">
       <div className="space-y-2">
@@ -47,36 +81,42 @@ export const MovingDetailsStep = ({ formData, onChange }: MovingDetailsStepProps
         </div>
       </div>
       <div className="space-y-2">
-        <Label htmlFor="moveDateStart">Earliest Move Date</Label>
-        <div className="relative">
-          <Calendar className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-          <Input
-            id="moveDateStart"
-            name="moveDateStart"
-            type="date"
-            className="pl-10"
-            value={formData.moveDateStart}
-            onChange={onChange}
-            required
-            min={new Date().toISOString().split('T')[0]}
-          />
-        </div>
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="moveDateEnd">Latest Move Date</Label>
-        <div className="relative">
-          <Calendar className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-          <Input
-            id="moveDateEnd"
-            name="moveDateEnd"
-            type="date"
-            className="pl-10"
-            value={formData.moveDateEnd}
-            onChange={onChange}
-            required
-            min={formData.moveDateStart || new Date().toISOString().split('T')[0]}
-          />
-        </div>
+        <Label>Move Dates</Label>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className={cn(
+                "w-full justify-start text-left font-normal",
+                !date && "text-muted-foreground"
+              )}
+            >
+              <Calendar className="mr-2 h-4 w-4" />
+              {date?.from ? (
+                date.to ? (
+                  <>
+                    {format(date.from, "LLL dd, y")} - {format(date.to, "LLL dd, y")}
+                  </>
+                ) : (
+                  format(date.from, "LLL dd, y")
+                )
+              ) : (
+                <span>Pick your move dates</span>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              initialFocus
+              mode="range"
+              defaultMonth={date?.from}
+              selected={date}
+              onSelect={handleDateSelect}
+              numberOfMonths={2}
+              disabled={{ before: new Date() }}
+            />
+          </PopoverContent>
+        </Popover>
       </div>
       <div className="space-y-2">
         <Label htmlFor="livingSpaceSqm">Living Space (m²)</Label>
