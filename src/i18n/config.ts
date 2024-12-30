@@ -18,12 +18,12 @@ const resources = {
       "selectBestOffer": "Select the best offer and schedule your move",
       
       // Quote Form
-      "getYourMovingQuote": "Get Your Moving Quote",
+      "getMovingQuote": "Get Your Moving Quote",
       "currentAddress": "Current Address",
       "newAddress": "New Address",
       "enterCurrentAddress": "Enter your current address",
       "enterNewAddress": "Enter your new address",
-      "typeOfMove": "Type of Move",
+      "moveType": "Type of Move",
       "private": "Private",
       "business": "Business",
       "international": "International",
@@ -40,25 +40,15 @@ const resources = {
       "back": "Back",
       "getQuotes": "Get Quotes",
       "submitting": "Submitting...",
-
-      // Login Section
-      "forCustomers": "For Customers",
-      "forMovingCompanies": "For Moving Companies",
-      "getInstantQuotes": "Get instant quotes from trusted moving companies",
-      "connectWithCustomers": "Connect with customers looking for moving services",
-      "customerLogin": "Customer Login",
-      "companyLogin": "Company Login",
-
-      // Testimonials
-      "whatUsersSay": "What Our Users Say",
-
-      // Footer
-      "aboutUs": "About Us",
-      "aboutUsText": "MoveShop24 connects you with trusted moving companies to make your relocation smooth and affordable.",
-      "quickLinks": "Quick Links",
-      "contact": "Contact",
-      "legal": "Legal",
-      "allRightsReserved": "All rights reserved.",
+      "fullName": "Full Name",
+      "enterFullName": "Enter your full name",
+      "email": "Email",
+      "enterEmail": "Enter your email",
+      "phone": "Phone Number",
+      "enterPhone": "Enter your phone number",
+      "specialItems": "Special Items",
+      "enterSpecialItems": "List any special items (piano, artwork, etc.)",
+      "loadingAddressVerification": "Loading address verification..."
     }
   },
   de: {
@@ -77,12 +67,12 @@ const resources = {
       "selectBestOffer": "Wählen Sie das beste Angebot und planen Sie Ihren Umzug",
       
       // Quote Form
-      "getYourMovingQuote": "Holen Sie sich Ihr Umzugsangebot",
+      "getMovingQuote": "Holen Sie sich Ihr Umzugsangebot",
       "currentAddress": "Aktuelle Adresse",
       "newAddress": "Neue Adresse",
       "enterCurrentAddress": "Geben Sie Ihre aktuelle Adresse ein",
       "enterNewAddress": "Geben Sie Ihre neue Adresse ein",
-      "typeOfMove": "Art des Umzugs",
+      "moveType": "Art des Umzugs",
       "private": "Privat",
       "business": "Geschäftlich",
       "international": "International",
@@ -99,25 +89,15 @@ const resources = {
       "back": "Zurück",
       "getQuotes": "Angebote einholen",
       "submitting": "Wird gesendet...",
-
-      // Login Section
-      "forCustomers": "Für Kunden",
-      "forMovingCompanies": "Für Umzugsunternehmen",
-      "getInstantQuotes": "Erhalten Sie sofort Angebote von vertrauenswürdigen Umzugsunternehmen",
-      "connectWithCustomers": "Verbinden Sie sich mit Kunden, die Umzugsdienstleistungen suchen",
-      "customerLogin": "Kunden-Login",
-      "companyLogin": "Unternehmens-Login",
-
-      // Testimonials
-      "whatUsersSay": "Was unsere Nutzer sagen",
-
-      // Footer
-      "aboutUs": "Über uns",
-      "aboutUsText": "MoveShop24 verbindet Sie mit vertrauenswürdigen Umzugsunternehmen, um Ihren Umzug reibungslos und kostengünstig zu gestalten.",
-      "quickLinks": "Schnellzugriff",
-      "contact": "Kontakt",
-      "legal": "Rechtliches",
-      "allRightsReserved": "Alle Rechte vorbehalten.",
+      "fullName": "Vollständiger Name",
+      "enterFullName": "Geben Sie Ihren vollständigen Namen ein",
+      "email": "E-Mail",
+      "enterEmail": "Geben Sie Ihre E-Mail-Adresse ein",
+      "phone": "Telefonnummer",
+      "enterPhone": "Geben Sie Ihre Telefonnummer ein",
+      "specialItems": "Besondere Gegenstände",
+      "enterSpecialItems": "Listen Sie besondere Gegenstände auf (Klavier, Kunstwerke, etc.)",
+      "loadingAddressVerification": "Adressüberprüfung wird geladen..."
     }
   }
 };

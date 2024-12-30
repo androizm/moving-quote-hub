@@ -5,6 +5,7 @@ import { AddressInput } from "./address-inputs/AddressInput";
 import { MoveDatePicker } from "./date-picker/MoveDatePicker";
 import { LivingSpaceInput } from "./living-space/LivingSpaceInput";
 import { MoveTypeSelector } from "./move-type/MoveTypeSelector";
+import { useTranslation } from "react-i18next";
 
 interface MovingDetailsStepProps {
   formData: {
@@ -19,6 +20,7 @@ interface MovingDetailsStepProps {
 }
 
 export const MovingDetailsStep = ({ formData, onChange }: MovingDetailsStepProps) => {
+  const { t } = useTranslation();
   const [date, setDate] = useState<DateRange | undefined>({
     from: formData.moveDateStart ? new Date(formData.moveDateStart) : undefined,
     to: formData.moveDateEnd ? new Date(formData.moveDateEnd) : undefined,
@@ -59,18 +61,18 @@ export const MovingDetailsStep = ({ formData, onChange }: MovingDetailsStepProps
   return (
     <div className="grid md:grid-cols-2 gap-6">
       <AddressInput
-        label="Current Address"
+        label={t('currentAddress')}
         id="fromAddress"
         value={formData.fromAddress}
         onChange={onChange}
-        placeholder="Enter your current address"
+        placeholder={t('enterCurrentAddress')}
       />
       <AddressInput
-        label="New Address"
+        label={t('newAddress')}
         id="toAddress"
         value={formData.toAddress}
         onChange={onChange}
-        placeholder="Enter your new address"
+        placeholder={t('enterNewAddress')}
       />
       <MoveTypeSelector
         value={formData.moveType}

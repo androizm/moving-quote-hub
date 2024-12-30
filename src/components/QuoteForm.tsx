@@ -5,8 +5,10 @@ import { MovingDetailsStep } from "./form-steps/MovingDetailsStep";
 import { CustomerInfoStep } from "./form-steps/CustomerInfoStep";
 import { FormStepIndicator } from "./form/FormStepIndicator";
 import { useQuoteForm } from "@/hooks/useQuoteForm";
+import { useTranslation } from "react-i18next";
 
 export const QuoteForm = () => {
+  const { t } = useTranslation();
   const {
     step,
     formData,
@@ -19,7 +21,7 @@ export const QuoteForm = () => {
 
   return (
     <div className="glass-card rounded-xl p-8 w-full max-w-6xl mx-auto">
-      <h2 className="text-2xl font-semibold mb-6">Get Your Moving Quote</h2>
+      <h2 className="text-2xl font-semibold mb-6">{t('getMovingQuote')}</h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         <FormStepIndicator currentStep={step} totalSteps={2} />
 
@@ -32,16 +34,16 @@ export const QuoteForm = () => {
         <div className="flex justify-end gap-4">
           {step === 2 && (
             <Button type="button" variant="outline" onClick={handleBack}>
-              <ArrowLeft className="w-4 h-4 mr-2" /> Back
+              <ArrowLeft className="w-4 h-4 mr-2" /> {t('back')}
             </Button>
           )}
           {step === 1 ? (
             <Button type="button" onClick={handleNext}>
-              Next <ArrowRight className="w-4 h-4 ml-2" />
+              {t('next')} <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           ) : (
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Submitting..." : "Get Quotes"}
+              {isSubmitting ? t('submitting') : t('getQuotes')}
             </Button>
           )}
         </div>

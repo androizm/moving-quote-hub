@@ -1,6 +1,7 @@
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Building2, Home, Plane, Piano } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface MoveTypeSelectorProps {
   value: string;
@@ -8,36 +9,38 @@ interface MoveTypeSelectorProps {
 }
 
 export const MoveTypeSelector = ({ value, onChange }: MoveTypeSelectorProps) => {
+  const { t } = useTranslation();
+
   const moveTypes = [
     { 
       value: "private", 
-      label: "Private",
+      label: t('private'),
       icon: Home,
-      description: "Moving from one home to another"
+      description: t('privateMove')
     },
     { 
       value: "business", 
-      label: "Business",
+      label: t('business'),
       icon: Building2,
-      description: "Office or commercial relocation"
+      description: t('businessMove')
     },
     { 
       value: "international", 
-      label: "International",
+      label: t('international'),
       icon: Plane,
-      description: "Moving across borders"
+      description: t('internationalMove')
     },
     { 
       value: "piano", 
-      label: "Piano Transport",
+      label: t('pianoTransport'),
       icon: Piano,
-      description: "Specialized piano moving service"
+      description: t('pianoMove')
     }
   ];
 
   return (
     <div className="space-y-3 md:col-span-2">
-      <Label className="text-base">Type of Move</Label>
+      <Label className="text-base">{t('moveType')}</Label>
       <RadioGroup
         value={value}
         onValueChange={onChange}

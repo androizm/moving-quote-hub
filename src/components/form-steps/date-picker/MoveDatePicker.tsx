@@ -6,6 +6,7 @@ import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 interface MoveDatePickerProps {
   date: DateRange | undefined;
@@ -13,9 +14,11 @@ interface MoveDatePickerProps {
 }
 
 export const MoveDatePicker = ({ date, onSelect }: MoveDatePickerProps) => {
+  const { t } = useTranslation();
+
   return (
     <div className="space-y-2">
-      <Label>Move Dates</Label>
+      <Label>{t('moveDates')}</Label>
       <Popover>
         <PopoverTrigger asChild>
           <Button
@@ -35,7 +38,7 @@ export const MoveDatePicker = ({ date, onSelect }: MoveDatePickerProps) => {
                 format(date.from, "LLL dd, y")
               )
             ) : (
-              <span>Pick your move dates</span>
+              <span>{t('pickMoveDates')}</span>
             )}
           </Button>
         </PopoverTrigger>

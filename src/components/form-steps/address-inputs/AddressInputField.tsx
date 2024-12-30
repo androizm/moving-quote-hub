@@ -1,6 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MapPin } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface AddressInputFieldProps {
   label: string;
@@ -19,6 +20,8 @@ export const AddressInputField = ({
   placeholder,
   inputRef,
 }: AddressInputFieldProps) => {
+  const { t } = useTranslation();
+
   return (
     <div className="space-y-2">
       <Label htmlFor={id}>{label}</Label>

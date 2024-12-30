@@ -1,6 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Ruler } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface LivingSpaceInputProps {
   value: string;
@@ -8,9 +9,11 @@ interface LivingSpaceInputProps {
 }
 
 export const LivingSpaceInput = ({ value, onChange }: LivingSpaceInputProps) => {
+  const { t } = useTranslation();
+
   return (
     <div className="space-y-2">
-      <Label htmlFor="livingSpaceSqm">Living Space (m²)</Label>
+      <Label htmlFor="livingSpaceSqm">{t('livingSpace')}</Label>
       <div className="relative">
         <Ruler className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
         <Input
@@ -18,7 +21,7 @@ export const LivingSpaceInput = ({ value, onChange }: LivingSpaceInputProps) => 
           name="livingSpaceSqm"
           type="number"
           className="pl-10"
-          placeholder="Enter living space in square meters"
+          placeholder={t('enterLivingSpace')}
           value={value}
           onChange={onChange}
           required

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 interface UsePlacesAutocompleteProps {
   onPlaceSelect: (address: string) => void;
@@ -11,6 +12,7 @@ export const usePlacesAutocomplete = ({
 }: UsePlacesAutocompleteProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!isGoogleMapsLoaded || !inputRef.current) {
@@ -24,7 +26,7 @@ export const usePlacesAutocomplete = ({
       fields: ["formatted_address"],
     };
 
-    const autoComplete = new google.maps.places.Autocomplete(
+    const autoComplete = new window.google.maps.places.Autocomplete(
       inputRef.current,
       options
     );
