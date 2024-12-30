@@ -10,7 +10,7 @@ export const usePlacesAutocomplete = ({
   isGoogleMapsLoaded 
 }: UsePlacesAutocompleteProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+  const autocompleteRef = useRef<typeof google.maps.places.Autocomplete | null>(null);
 
   useEffect(() => {
     if (!isGoogleMapsLoaded || !inputRef.current) {
