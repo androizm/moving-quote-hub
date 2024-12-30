@@ -1,28 +1,31 @@
 import { motion } from "framer-motion";
 import { Star } from "lucide-react";
+import { useTranslation } from 'react-i18next';
 
 export const Testimonials = () => {
+  const { t } = useTranslation();
+
   const testimonials = [
     {
       name: "Sarah Johnson",
-      text: "The moving quote comparison made it so easy to find the right company. Saved both time and money!",
+      text: t('testimonial1'),
       rating: 5,
     },
     {
       name: "Michael Chen",
-      text: "Excellent service! Got multiple competitive quotes within hours. The move went smoothly.",
+      text: t('testimonial2'),
       rating: 5,
     },
     {
       name: "Emma Williams",
-      text: "Very professional platform. Helped me find a reliable moving company within my budget.",
+      text: t('testimonial3'),
       rating: 4,
     },
   ];
 
   return (
     <div className="max-w-6xl mx-auto mt-16 mb-16">
-      <h2 className="text-3xl font-bold text-center mb-12">What Our Users Say</h2>
+      <h2 className="text-3xl font-bold text-center mb-12">{t('whatUsersSay')}</h2>
       <div className="grid md:grid-cols-3 gap-8">
         {testimonials.map((testimonial, index) => (
           <motion.div

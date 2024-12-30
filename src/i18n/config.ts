@@ -48,7 +48,28 @@ const resources = {
       "enterPhone": "Enter your phone number",
       "specialItems": "Special Items",
       "enterSpecialItems": "List any special items (piano, artwork, etc.)",
-      "loadingAddressVerification": "Loading address verification..."
+      "loadingAddressVerification": "Loading address verification...",
+
+      // Testimonials
+      "whatUsersSay": "What Our Users Say",
+      "testimonial1": "The moving quote comparison made it so easy to find the right company. Saved both time and money!",
+      "testimonial2": "Excellent service! Got multiple competitive quotes within hours. The move went smoothly.",
+      "testimonial3": "Very professional platform. Helped me find a reliable moving company within my budget.",
+
+      // Footer
+      "aboutUs": "About Us",
+      "aboutUsText": "MoveShop24 connects you with trusted moving companies to make your relocation smooth and affordable.",
+      "quickLinks": "Quick Links",
+      "howItWorksLink": "How It Works",
+      "getQuoteLink": "Get a Quote",
+      "forMovingCompanies": "For Moving Companies",
+      "contact": "Contact",
+      "email": "Email",
+      "phone": "Phone",
+      "legal": "Legal",
+      "privacyPolicy": "Privacy Policy",
+      "termsOfService": "Terms of Service",
+      "allRightsReserved": "All rights reserved."
     }
   },
   de: {
@@ -97,7 +118,28 @@ const resources = {
       "enterPhone": "Geben Sie Ihre Telefonnummer ein",
       "specialItems": "Besondere Gegenstände",
       "enterSpecialItems": "Listen Sie besondere Gegenstände auf (Klavier, Kunstwerke, etc.)",
-      "loadingAddressVerification": "Adressüberprüfung wird geladen..."
+      "loadingAddressVerification": "Adressüberprüfung wird geladen...",
+
+      // Testimonials
+      "whatUsersSay": "Was unsere Nutzer sagen",
+      "testimonial1": "Der Umzugsangebots-Vergleich machte es so einfach, die richtige Firma zu finden. Zeit und Geld gespart!",
+      "testimonial2": "Ausgezeichneter Service! Erhielt innerhalb von Stunden mehrere wettbewerbsfähige Angebote. Der Umzug verlief reibungslos.",
+      "testimonial3": "Sehr professionelle Plattform. Half mir, ein zuverlässiges Umzugsunternehmen in meinem Budget zu finden.",
+
+      // Footer
+      "aboutUs": "Über uns",
+      "aboutUsText": "MoveShop24 verbindet Sie mit vertrauenswürdigen Umzugsunternehmen, um Ihren Umzug reibungslos und kostengünstig zu gestalten.",
+      "quickLinks": "Schnelllinks",
+      "howItWorksLink": "So funktioniert's",
+      "getQuoteLink": "Angebot einholen",
+      "forMovingCompanies": "Für Umzugsunternehmen",
+      "contact": "Kontakt",
+      "email": "E-Mail",
+      "phone": "Telefon",
+      "legal": "Rechtliches",
+      "privacyPolicy": "Datenschutzerklärung",
+      "termsOfService": "Nutzungsbedingungen",
+      "allRightsReserved": "Alle Rechte vorbehalten."
     }
   }
 };
