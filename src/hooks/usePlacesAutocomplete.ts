@@ -1,16 +1,20 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 interface UsePlacesAutocompleteProps {
   onPlaceSelect: (address: string) => void;
+  isGoogleMapsLoaded: boolean;
 }
 
-export const usePlacesAutocomplete = ({ onPlaceSelect }: UsePlacesAutocompleteProps) => {
-  const [autocomplete, setAutocomplete] = useState<google.maps.places.Autocomplete | null>(null);
+export const usePlacesAutocomplete = ({ 
+  onPlaceSelect, 
+  isGoogleMapsLoaded 
+}: UsePlacesAutocompleteProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
 
   useEffect(() => {
-    if (!inputRef.current) {
-      console.log("Input ref not available");
+    if (!isGoogleMapsLoaded || !inputRef.current) {
+      console.log("Google Maps not loaded or input ref not available");
       return;
     }
 
@@ -33,14 +37,14 @@ export const usePlacesAutocomplete = ({ onPlaceSelect }: UsePlacesAutocompletePr
       }
     });
 
-    setAutocomplete(autoComplete);
+    autocompleteRef.current = autoComplete;
 
     return () => {
-      if (autocomplete) {
-        google.maps.event.clearInstanceListeners(autocomplete);
+      if (autocompleteRef.current) {
+        google.maps.event.clearInstanceListeners(autocompleteRef.current);
       }
     };
-  }, [onPlaceSelect]);
+  }, [isGoogleMapsLoaded, onPlaceSelect]);
 
   return { inputRef };
 };

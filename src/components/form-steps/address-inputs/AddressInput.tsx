@@ -10,7 +10,13 @@ interface AddressInputProps {
   placeholder: string;
 }
 
-export const AddressInput = ({ label, id, value, onChange, placeholder }: AddressInputProps) => {
+export const AddressInput = ({ 
+  label, 
+  id, 
+  value, 
+  onChange, 
+  placeholder 
+}: AddressInputProps) => {
   const isGoogleMapsLoaded = useGoogleMapsScript();
 
   const handlePlaceSelect = (address: string) => {
@@ -25,20 +31,8 @@ export const AddressInput = ({ label, id, value, onChange, placeholder }: Addres
 
   const { inputRef } = usePlacesAutocomplete({
     onPlaceSelect: handlePlaceSelect,
+    isGoogleMapsLoaded,
   });
-
-  if (!isGoogleMapsLoaded) {
-    return (
-      <AddressInputField
-        label={label}
-        id={id}
-        value={value}
-        onChange={onChange}
-        placeholder="Loading address verification..."
-        inputRef={inputRef}
-      />
-    );
-  }
 
   return (
     <AddressInputField
@@ -46,7 +40,7 @@ export const AddressInput = ({ label, id, value, onChange, placeholder }: Addres
       id={id}
       value={value}
       onChange={onChange}
-      placeholder={placeholder}
+      placeholder={isGoogleMapsLoaded ? placeholder : "Loading address verification..."}
       inputRef={inputRef}
     />
   );
