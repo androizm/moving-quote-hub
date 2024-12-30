@@ -1,28 +1,31 @@
 import { motion } from "framer-motion";
 import { Truck, ClipboardCheck, ThumbsUp } from "lucide-react";
+import { useTranslation } from 'react-i18next';
 
 export const HowItWorks = () => {
+  const { t } = useTranslation();
+
   const steps = [
     {
       icon: <ClipboardCheck className="w-12 h-12 text-primary mb-4" />,
-      title: "Request a Quote",
-      description: "Fill out our simple form with your moving details",
+      title: t('requestQuote'),
+      description: t('fillOutForm'),
     },
     {
       icon: <Truck className="w-12 h-12 text-primary mb-4" />,
-      title: "Get Multiple Quotes",
-      description: "Receive competitive quotes from trusted moving companies",
+      title: t('getMultipleQuotes'),
+      description: t('receiveQuotes'),
     },
     {
       icon: <ThumbsUp className="w-12 h-12 text-primary mb-4" />,
-      title: "Choose & Book",
-      description: "Select the best offer and schedule your move",
+      title: t('chooseAndBook'),
+      description: t('selectBestOffer'),
     },
   ];
 
   return (
     <div className="max-w-6xl mx-auto mt-16 mb-16">
-      <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
+      <h2 className="text-3xl font-bold text-center mb-12">{t('howItWorks')}</h2>
       <div className="grid md:grid-cols-3 gap-8">
         {steps.map((step, index) => (
           <motion.div

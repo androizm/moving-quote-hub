@@ -4,18 +4,21 @@ import { LoginSection } from "@/components/LoginSection";
 import { Testimonials } from "@/components/Testimonials";
 import { HowItWorks } from "@/components/HowItWorks";
 import { Footer } from "@/components/Footer";
-import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
+import { useSession } from "@supabase/auth-helpers-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { useEffect } from "react";
+import { useTranslation } from 'react-i18next';
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 const Index = () => {
   const session = useSession();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const checkUserRole = async () => {
@@ -66,12 +69,15 @@ const Index = () => {
             alt="MoveShop24 Logo" 
             className="h-12 md:h-16"
           />
-          {session && (
-            <Button variant="outline" onClick={handleSignOut} className="flex items-center gap-2">
-              <LogOut className="h-4 w-4" />
-              Sign Out
-            </Button>
-          )}
+          <div className="flex items-center gap-4">
+            <LanguageSwitcher />
+            {session && (
+              <Button variant="outline" onClick={handleSignOut} className="flex items-center gap-2">
+                <LogOut className="h-4 w-4" />
+                Sign Out
+              </Button>
+            )}
+          </div>
         </div>
 
         <motion.div
@@ -81,10 +87,10 @@ const Index = () => {
           className="text-center mb-16"
         >
           <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
-            Find Your Perfect Moving Company
+            {t('findPerfectMovingCompany')}
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Compare quotes from trusted moving companies and save up to 40%
+            {t('compareQuotes')}
           </p>
         </motion.div>
 
