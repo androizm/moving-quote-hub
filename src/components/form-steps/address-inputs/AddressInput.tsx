@@ -14,7 +14,7 @@ interface AddressInputProps {
 
 export const AddressInput = ({ label, id, value, onChange, placeholder }: AddressInputProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [autocomplete, setAutocomplete] = useState<typeof google.maps.places.Autocomplete | null>(null);
+  const [autocomplete, setAutocomplete] = useState<google.maps.places.Autocomplete | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
