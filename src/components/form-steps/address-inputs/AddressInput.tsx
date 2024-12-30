@@ -14,16 +14,20 @@ interface AddressInputProps {
 
 export const AddressInput = ({ label, id, value, onChange, placeholder }: AddressInputProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [autocomplete, setAutocomplete] = useState<typeof google.maps.places.Autocomplete | null>(null);
+  const [autocomplete, setAutocomplete] = useState<google.maps.places.Autocomplete | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
     const loadGoogleMapsScript = () => {
+      console.log("Loading Google Maps script...");
       const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_PLACES_API_KEY}&libraries=places`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_PLACES_API_KEY}&libraries=places`;
       script.async = true;
       script.defer = true;
-      script.onload = initAutocomplete;
+      script.onload = () => {
+        console.log("Google Maps script loaded successfully");
+        initAutocomplete();
+      };
       script.onerror = () => {
         console.error("Failed to load Google Maps script");
         toast({
@@ -36,8 +40,12 @@ export const AddressInput = ({ label, id, value, onChange, placeholder }: Addres
     };
 
     const initAutocomplete = () => {
-      if (!inputRef.current) return;
+      if (!inputRef.current) {
+        console.log("Input ref not available");
+        return;
+      }
 
+      console.log("Initializing autocomplete...");
       const options = {
         componentRestrictions: { country: "us" },
         fields: ["formatted_address"],
@@ -51,6 +59,7 @@ export const AddressInput = ({ label, id, value, onChange, placeholder }: Addres
       autoComplete.addListener("place_changed", () => {
         const place = autoComplete.getPlace();
         if (place.formatted_address) {
+          console.log("Selected address:", place.formatted_address);
           const event = {
             target: {
               name: id,
