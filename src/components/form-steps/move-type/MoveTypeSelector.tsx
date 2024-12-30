@@ -59,7 +59,8 @@ export const MoveTypeSelector = ({ value, onChange }: MoveTypeSelectorProps) => 
               <span className="font-medium mb-1">{type.label}</span>
               <span className="text-sm text-gray-500 text-center">{type.description}</span>
             </label>
-          ))}
+          );
+        })}
       </RadioGroup>
     </div>
   );
