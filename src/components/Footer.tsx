@@ -31,7 +31,6 @@ export const Footer = () => {
             <h3 className="font-semibold mb-4">{t('contact')}</h3>
             <ul className="space-y-2 text-sm">
               <li className="text-gray-600">{t('email')}: support@moveshop24.com</li>
-              <li className="text-gray-600">{t('phone')}: (555) 123-4567</li>
             </ul>
           </div>
           <div>
